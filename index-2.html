@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TaskYaar - Kaam Karo, Josh Se, Reward Ke Sath</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+<meta name="theme-color" content="#00B8A9">
+<meta property="og:title" content="TaskYaar - Kaam Karo, Josh Se, Reward Ke Sath">
+<meta property="og:description" content="Daily tasks complete karo, coins kamao, doston se connect ho, real-time chat karo. Bilkul free!">
+<meta property="og:type" content="website">
+<meta name="description" content="TaskYaar - Networking + Task Reward App. Tasks karo, coins kamao, dost banao, chat karo.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TaskYaar">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22TaskYaar%22%2C%22short_name%22%3A%22TaskYaar%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF9F0%22%2C%22theme_color%22%3A%22%2300B8A9%22%7D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<style>
+  :root{
+    --teal:#00B8A9;
+    --teal-dark:#019283;
+    --mango:#FFB800;
+    --coral:#FF6B6B;
+    --purple:#6C5CE7;
+    --navy:#1B3A4B;
+    --cream:#FFF9F0;
+    --white:#ffffff;
+    --line:#E9E2D4;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:0;}
+  html,body{
+    font-family:'Nunito',sans-serif;
+    background:var(--cream);
+    color:var(--navy);
+    -webkit-tap-highlight-color:transparent;
+  }
+  h1,h2,h3,.brand,.tab-label,.section-title{font-family:'Baloo 2',cursive;}
+  button{font-family:'Nunito',sans-serif;cursor:pointer;border:none;}
+  input,textarea,select{font-family:'Nunito',sans-serif;}
+  img,svg{max-width:100%;}
+  #app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;background:var(--cream);padding-bottom:78px;}
+
+  /* ---------- AUTH ---------- */
+  .auth-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:32px 26px;background:
+    radial-gradient(circle at 15% 10%, rgba(255,184,0,.28), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(108,92,231,.25), transparent 45%),
+    var(--cream);
+  }
+  .auth-logo{text-align:center;margin-bottom:6px;}
+  .auth-logo .emoji-stack{font-size:52px;line-height:1;}
+  .brand{font-size:34px;font-weight:800;color:var(--navy);text-align:center;margin:6px 0 2px;letter-spacing:.5px;}
+  .brand span{color:var(--teal);}
+  .tagline{text-align:center;color:#6b7d84;font-weight:700;margin-bottom:28px;font-size:14.5px;}
+  .card{background:var(--white);border-radius:24px;padding:24px 20px;box-shadow:0 10px 30px rgba(27,58,75,.08);border:2px solid var(--line);}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-weight:800;font-size:13px;margin-bottom:6px;color:var(--navy);}
+  .field input, .field select, .field textarea{
+    width:100%;padding:13px 14px;border:2px solid var(--line);border-radius:14px;font-size:15px;font-weight:700;
+    background:#FCFAF5;color:var(--navy);outline:none;transition:border .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--teal);}
+  .avatar-picker{display:flex;flex-wrap:wrap;gap:8px;}
+  .avatar-opt{font-size:26px;padding:8px 10px;border-radius:12px;border:2px solid var(--line);background:#FCFAF5;}
+  .avatar-opt.selected{border-color:var(--teal);background:rgba(0,184,169,.12);}
+  .btn-primary{
+    width:100%;padding:14px;border-radius:16px;background:var(--teal);color:#fff;font-weight:800;font-size:16px;
+    box-shadow:0 6px 0 var(--teal-dark);transition:transform .08s;
+  }
+  .btn-primary:active{transform:translateY(4px);box-shadow:0 2px 0 var(--teal-dark);}
+  .btn-secondary{
+    width:100%;padding:13px;border-radius:16px;background:transparent;color:var(--teal-dark);font-weight:800;font-size:14.5px;margin-top:10px;
+  }
+  .switch-line{text-align:center;margin-top:16px;font-weight:700;font-size:14px;color:#6b7d84;}
+  .switch-line a{color:var(--coral);font-weight:800;text-decoration:none;}
+  .error-msg{background:#FFE9E9;color:#C0392B;border:2px solid #FFC9C9;padding:9px 12px;border-radius:12px;font-weight:700;font-size:13px;margin-bottom:12px;display:none;}
+
+  /* ---------- TOP HEADER ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 18px 14px;background:var(--white);border-bottom:2px solid var(--line);
+    position:sticky;top:0;z-index:20;
+  }
+  .topbar .brand-mini{font-size:20px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:6px;}
+  .stat-pill{display:flex;align-items:center;gap:6px;background:#FCFAF5;border:2px solid var(--line);padding:6px 10px;border-radius:20px;font-weight:800;font-size:13.5px;}
+  .stat-row{display:flex;gap:8px;align-items:center;}
+  .bell-btn{background:#FCFAF5;border:2px solid var(--line);width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;flex-shrink:0;}
+  .bell-badge{position:absolute;top:-5px;right:-5px;background:var(--coral);color:#fff;font-size:9px;font-weight:800;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+  .notif-row{display:flex;gap:10px;align-items:flex-start;background:var(--white);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;}
+  .notif-row.unread{border-color:var(--teal);background:rgba(0,184,169,.05);}
+  .notif-icon{font-size:20px;width:38px;height:38px;background:#FCFAF5;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .notif-text{font-size:13.5px;font-weight:700;line-height:1.4;flex:1;}
+  .notif-text b{color:var(--navy);}
+  .notif-time{font-size:11px;color:#93a1a6;font-weight:700;margin-top:3px;}
+  .post-delete-btn{background:none;color:#c9d0d3;font-size:15px;margin-left:auto;padding:2px 6px;}
+  .share-box{background:linear-gradient(135deg,var(--purple),#8a7cf0);border-radius:18px;padding:16px;margin-bottom:16px;color:#fff;}
+  .share-box .st{font-weight:800;font-size:14.5px;margin-bottom:8px;}
+  .share-btn{background:rgba(255,255,255,.2);color:#fff;font-weight:800;padding:9px 16px;border-radius:12px;font-size:13px;border:2px solid rgba(255,255,255,.4);}
+  .pro-badge{background:linear-gradient(135deg,var(--purple),#8a7cf0);color:#fff;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px;vertical-align:middle;white-space:nowrap;}
+  .pro-box{background:linear-gradient(135deg,#1B3A4B,#2d5266);border-radius:20px;padding:18px;margin-bottom:16px;color:#fff;}
+  .pro-box .pt{font-size:17px;font-weight:800;margin-bottom:6px;}
+  .pro-box ul{margin:8px 0 14px;padding-left:18px;font-size:13px;font-weight:700;line-height:1.9;color:#cfe0e6;}
+  .pro-box .price{font-size:22px;font-weight:800;color:var(--mango);margin-bottom:10px;}
+  .pro-pay-info{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;font-size:12.5px;font-weight:700;margin-bottom:12px;line-height:1.6;}
+  .admin-link-btn{width:100%;padding:12px;border-radius:14px;background:var(--navy);color:#fff;font-weight:800;margin-bottom:10px;}
+  .admin-section-title{font-weight:800;font-size:15px;margin:18px 0 10px;color:var(--navy);}
+  .admin-form{background:var(--white);border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px;}
+  .sponsor-card{background:var(--white);border:2px solid var(--mango);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;position:relative;}
+  .sponsor-tag{position:absolute;top:-9px;left:12px;background:var(--mango);color:#5c3d00;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;}
+  .admin-row{display:flex;align-items:center;gap:10px;background:var(--white);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;}
+  .admin-row .rinfo{flex:1;font-size:12.5px;font-weight:700;}
+  .admin-row .rinfo b{font-size:13.5px;}
+  .mini-btn{font-size:12px;font-weight:800;padding:7px 11px;border-radius:10px;}
+  .mini-btn.approve{background:#B7EFC5;color:#1c7a3a;}
+  .mini-btn.reject{background:#FFD3D3;color:#c0392b;}
+  .mini-btn.del{background:#FFD3D3;color:#c0392b;}
+  .mini-btn.toggle{background:#E9E2D4;color:var(--navy);}
+  .friend-btn.report{background:none;color:#c9d0d3;font-size:15px;padding:6px 8px;}
+  .banned-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 26px;text-align:center;background:var(--cream);}
+  .coin-pill{color:#B8860B;}
+  .streak-pill{color:var(--coral);}
+
+  /* ---------- SECTIONS ---------- */
+  .section{display:none;padding:16px 16px 6px;animation:fadein .25s ease;}
+  .section.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .section-title{font-size:21px;font-weight:800;margin:4px 0 14px;}
+
+  /* ---------- FEED ---------- */
+  .composer{background:var(--white);border:2px solid var(--line);border-radius:20px;padding:14px;margin-bottom:16px;}
+  .composer textarea{resize:none;min-height:60px;border:none;background:transparent;padding:4px;font-size:15px;font-weight:700;}
+  .composer textarea:focus{outline:none;}
+  .composer-actions{display:flex;justify-content:flex-end;margin-top:6px;}
+  .btn-post{background:var(--coral);color:#fff;font-weight:800;padding:9px 20px;border-radius:14px;box-shadow:0 4px 0 #d94f4f;font-size:14px;}
+  .btn-post:active{transform:translateY(3px);box-shadow:none;}
+  .post-card{background:var(--white);border:2px solid var(--line);border-radius:20px;padding:14px;margin-bottom:14px;}
+  .post-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .post-avatar{font-size:28px;width:42px;height:42px;border-radius:50%;background:#FCFAF5;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);}
+  .post-name{font-weight:800;font-size:14.5px;}
+  .post-time{font-size:12px;color:#93a1a6;font-weight:700;}
+  .post-text{font-size:15px;font-weight:700;line-height:1.5;margin:6px 0 10px;color:var(--navy);}
+  .post-actions{display:flex;gap:16px;border-top:2px solid var(--line);padding-top:10px;}
+  .post-actions button{background:none;color:#6b7d84;font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:5px;}
+  .post-actions button.liked{color:var(--coral);}
+  .comment-box{margin-top:10px;display:none;}
+  .comment-box.open{display:block;}
+  .comment-item{font-size:13.5px;font-weight:700;background:#FCFAF5;padding:7px 10px;border-radius:10px;margin-top:6px;}
+  .comment-item b{color:var(--teal-dark);}
+  .comment-input-row{display:flex;gap:8px;margin-top:8px;}
+  .comment-input-row input{flex:1;padding:9px 12px;border-radius:12px;border:2px solid var(--line);font-size:13.5px;font-weight:700;}
+  .comment-input-row button{background:var(--teal);color:#fff;padding:0 14px;border-radius:12px;font-weight:800;font-size:13px;}
+  .empty-state{text-align:center;padding:40px 20px;color:#93a1a6;font-weight:700;}
+  .empty-state .big-emoji{font-size:44px;display:block;margin-bottom:10px;}
+
+  /* ---------- TASKS ---------- */
+  .streak-banner{background:linear-gradient(135deg,var(--mango),#ffcf4d);border-radius:20px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;color:#5c3d00;}
+  .streak-banner .big{font-size:26px;font-weight:800;}
+  .task-card{background:var(--white);border:2px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+  .task-card.done{opacity:.55;}
+  .task-emoji{font-size:26px;width:46px;height:46px;background:#FCFAF5;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .task-body{flex:1;}
+  .task-title{font-weight:800;font-size:14.5px;}
+  .task-reward{font-size:12.5px;font-weight:800;color:#B8860B;margin-top:2px;}
+  .task-btn{background:var(--purple);color:#fff;font-weight:800;font-size:12.5px;padding:9px 14px;border-radius:12px;box-shadow:0 4px 0 #5647c2;white-space:nowrap;}
+  .task-btn:active{transform:translateY(3px);box-shadow:none;}
+  .task-btn.done-btn{background:#B7EFC5;color:#1c7a3a;box-shadow:none;}
+
+  /* ---------- LEADERBOARD ---------- */
+  .lb-row{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;}
+  .lb-rank{font-weight:800;font-size:16px;width:26px;text-align:center;color:#93a1a6;}
+  .lb-rank.top1{color:#FFB800;font-size:20px;}
+  .lb-rank.top2{color:#B0B0B0;font-size:18px;}
+  .lb-rank.top3{color:#CD7F32;font-size:18px;}
+  .lb-avatar{font-size:24px;width:38px;height:38px;background:#FCFAF5;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);}
+  .lb-name{font-weight:800;font-size:14px;flex:1;}
+  .lb-coins{font-weight:800;color:#B8860B;font-size:13.5px;}
+  .lb-you{border-color:var(--teal);background:rgba(0,184,169,.06);}
+
+  /* ---------- PROFILE ---------- */
+  .profile-head{text-align:center;padding:10px 0 18px;}
+  .profile-avatar{font-size:56px;width:96px;height:96px;background:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;border:3px solid var(--teal);}
+  .profile-name{font-size:20px;font-weight:800;}
+  .owner-badge{background:linear-gradient(135deg,var(--mango),#ffd166);color:#5c3d00;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px;vertical-align:middle;white-space:nowrap;}
+  .profile-bio{font-size:13.5px;color:#6b7d84;font-weight:700;margin-top:4px;padding:0 20px;}
+  .profile-badges{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .badge-chip{background:var(--white);border:2px solid var(--line);border-radius:12px;padding:5px 10px;font-size:12px;font-weight:800;}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;}
+  .stat-box{background:var(--white);border:2px solid var(--line);border-radius:16px;padding:12px 6px;text-align:center;}
+  .stat-box .num{font-size:18px;font-weight:800;color:var(--teal-dark);}
+  .stat-box .lbl{font-size:11px;font-weight:700;color:#93a1a6;}
+  .profile-section-label{font-weight:800;font-size:14px;margin:16px 0 8px;color:var(--navy);}
+  .btn-outline{width:100%;padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--white);font-weight:800;color:var(--navy);margin-bottom:10px;}
+  .btn-danger{width:100%;padding:12px;border-radius:14px;background:transparent;color:var(--coral);font-weight:800;border:2px solid #FFD3D3;}
+
+  /* ---------- FRIENDS ---------- */
+  .friend-row{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--line);border-radius:16px;padding:11px 14px;margin-bottom:10px;}
+  .friend-name{font-weight:800;font-size:14px;flex:1;}
+  .friend-btn{font-weight:800;font-size:12.5px;padding:8px 13px;border-radius:12px;}
+  .friend-btn.add{background:var(--teal);color:#fff;}
+  .friend-btn.added{background:#EAEAEA;color:#93a1a6;}
+  .friend-btn.msg{background:var(--purple);color:#fff;margin-left:6px;}
+  .friend-actions{display:flex;align-items:center;}
+  .search-bar{width:100%;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-weight:700;margin-bottom:14px;font-size:14px;background:var(--white);}
+
+  /* ---------- CHAT ---------- */
+  .chat-list-row{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;position:relative;}
+  .chat-list-row .post-avatar{width:44px;height:44px;font-size:22px;flex-shrink:0;}
+  .chat-info{flex:1;min-width:0;}
+  .chat-name-row{display:flex;justify-content:space-between;align-items:center;}
+  .chat-name{font-weight:800;font-size:14.5px;}
+  .chat-time{font-size:11px;color:#93a1a6;font-weight:700;}
+  .chat-preview{font-size:12.5px;color:#8a969a;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px;}
+  .unread-dot{background:var(--coral);color:#fff;font-size:10.5px;font-weight:800;min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0;}
+  .nav-icon-wrap{position:relative;display:inline-block;}
+  .nav-badge{position:absolute;top:-4px;right:-8px;background:var(--coral);color:#fff;font-size:9px;font-weight:800;min-width:14px;height:14px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+
+  /* thread view */
+  .thread-header{display:flex;align-items:center;gap:10px;padding:2px 0 14px;border-bottom:2px solid var(--line);margin-bottom:12px;}
+  .back-btn{background:var(--white);border:2px solid var(--line);width:36px;height:36px;border-radius:12px;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .thread-avatar{font-size:24px;width:38px;height:38px;background:#FCFAF5;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);}
+  .thread-name{font-weight:800;font-size:15px;}
+  .thread-messages{display:flex;flex-direction:column;gap:8px;padding-bottom:12px;}
+  .msg-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:14px;font-weight:700;line-height:1.4;word-wrap:break-word;}
+  .msg-mine{align-self:flex-end;background:var(--teal);color:#fff;border-bottom-right-radius:4px;}
+  .msg-theirs{align-self:flex-start;background:var(--white);border:2px solid var(--line);color:var(--navy);border-bottom-left-radius:4px;}
+  .msg-time{font-size:9.5px;font-weight:700;opacity:.65;margin-top:3px;display:block;}
+  .chat-input-bar{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
+    background:var(--white);border-top:2px solid var(--line);padding:10px 14px;display:flex;gap:8px;z-index:25;}
+  .chat-input-bar input{flex:1;padding:11px 14px;border-radius:20px;border:2px solid var(--line);font-weight:700;font-size:14px;}
+  .chat-send-btn{background:var(--coral);color:#fff;width:42px;height:42px;border-radius:50%;font-size:16px;flex-shrink:0;}
+  .thread-body{padding-bottom:60px;}
+
+  /* ---------- BOTTOM NAV ---------- */
+  .bottom-nav{
+    position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
+    background:var(--white);border-top:2px solid var(--line);display:flex;z-index:30;
+    padding:7px 2px calc(7px + env(safe-area-inset-bottom));
+  }
+  .nav-btn{flex:1;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;color:#B7C2C6;padding:5px 0;border-radius:12px;min-width:0;}
+  .nav-btn .nav-icon{font-size:19px;}
+  .nav-btn .tab-label{font-size:9.5px;font-weight:700;}
+  .nav-btn.active{color:var(--teal-dark);}
+  .nav-btn.active .tab-label{font-weight:800;}
+
+  /* ---------- TOAST / CONFETTI ---------- */
+  .toast{
+    position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--navy);color:#fff;padding:12px 20px;border-radius:16px;font-weight:800;font-size:14px;
+    opacity:0;transition:all .3s;z-index:100;max-width:90%;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.2);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .confetti-piece{position:fixed;top:-10px;font-size:18px;z-index:99;pointer-events:none;animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0.2;}}
+
+  ::-webkit-scrollbar{width:0;}
+  html{scroll-behavior:smooth;}
+  body{-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;}
+  input, textarea, select{font-size:16px !important;}
+  .topbar{padding-top:calc(16px + env(safe-area-inset-top));}
+  .nav-btn{transition:transform .1s;}
+  .nav-btn:active{transform:scale(0.9);}
+  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--teal);border-radius:50%;margin:0 auto 12px;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .clickable-avatar{cursor:pointer;}
+  .view-profile-btns{display:flex;gap:10px;margin-top:14px;}
+  .view-profile-btns button{flex:1;padding:12px;border-radius:14px;font-weight:800;font-size:13.5px;}
+  .achv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .achv-item{background:var(--white);border:2px solid var(--line);border-radius:16px;padding:12px 6px;text-align:center;}
+  .achv-item.locked{opacity:.35;}
+  .achv-emoji{font-size:24px;display:block;margin-bottom:4px;}
+  .achv-label{font-size:10px;font-weight:800;color:var(--navy);}
+  .online-dot{width:11px;height:11px;background:#3ECF6E;border-radius:50%;border:2px solid var(--white);position:absolute;bottom:0;right:0;z-index:2;}
+  .avatar-wrap{position:relative;display:inline-flex;flex-shrink:0;}
+</style>
+<body>
+<div id="app"></div>
+<script>
+/* ====================================================================
+   TASKYAAR — FIREBASE CONFIG
+   Neeche apna Firebase project ka config paste karo (Firebase Console
+   > Project Settings > General > Your apps > SDK setup and config).
+   ==================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBf-Pqipw_m8TfFmwSXOqEM9nmesVs4QcM",
+  authDomain: "taskyaar-a925b.firebaseapp.com",
+  projectId: "taskyaar-a925b",
+  storageBucket: "taskyaar-a925b.firebasestorage.app",
+  messagingSenderId: "396863993634",
+  appId: "1:396863993634:web:fc94bc43fae8ff9de1977b"
+};
+
+const app = document.getElementById('app');
+
+if(firebaseConfig.apiKey === "YOUR_API_KEY_HERE"){
+  app.innerHTML = `
+    <div style="padding:50px 26px;text-align:center;font-family:sans-serif;max-width:480px;margin:0 auto;">
+      <div style="font-size:44px;">⚙️</div>
+      <h2 style="color:#1B3A4B;">Firebase Config Missing</h2>
+      <p style="color:#6b7d84;line-height:1.6;font-weight:600;">
+        Is file ke <code>bodyscript</code> (script tag) ke top mein apna Firebase project ka
+        <b>firebaseConfig</b> object paste karo, phir site kaam karegi.
+        Setup guide chat mein di gayi hai.
+      </p>
+    </div>`;
+  throw new Error('Firebase config not set');
+}
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const FieldValue = firebase.firestore.FieldValue;
+
+/* ============ CONSTANTS ============ */
+const AVATARS = ['😎','🦁','🐼','🦊','🐸','🐨','🦄','🐯','🐵','🦉','🐺','🐧','🥷','🧑‍🚀','🧑‍💻','🧙'];
+const TASKS = [
+  {id:'t1', title:'Apna profile complete karo', desc:'Bio aur avatar set karo', emoji:'📝', reward:20},
+  {id:'t2', title:'Ek post share karo', desc:'Feed pe kuch likho', emoji:'📢', reward:15},
+  {id:'t3', title:'3 posts ko like karo', desc:'Doston ki post pasand karo', emoji:'❤️', reward:10},
+  {id:'t4', title:'Naya dost banao', desc:'Kisi ko follow/add karo', emoji:'🤝', reward:25},
+  {id:'t5', title:'Kisi post pe comment karo', desc:'Apna khayal share karo', emoji:'💬', reward:10},
+  {id:'t6', title:'Aaj app explore karo', desc:'Sab tabs ghoom kar aao', emoji:'🧭', reward:5},
+];
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function usernameToEmail(u){ return u.toLowerCase()+'@taskyaar.local'; }
+function chatKey(u1,u2){ return [u1,u2].sort().join('_'); }
+function escapeHtml(str){ const d=document.createElement('div'); d.textContent=str||''; return d.innerHTML; }
+const OWNER_USERNAME = 'theowner';
+const OWNER_WHATSAPP = '923433245314';
+const REFERRAL_BONUS_REFERRER = 50;
+const FCM_VAPID_KEY = 'BE9JLyaPuiIpSMI1CL5Vxehhf7mWmr4oxd86EeCMZagdGDsRaHSM5u0RhDAC65fJq5tPXBMH6ZTJYGeKaPSrPEc';
+const REFERRAL_BONUS_NEWUSER = 20;
+const refCodeFromUrl = (new URLSearchParams(window.location.search).get('ref')||'').trim().toLowerCase();
+function ownerTag(username){
+  if(username && username.toLowerCase()===OWNER_USERNAME) return ' <span class="owner-badge" title="Site Owner">👑 Owner</span>';
+  return '';
+}
+function proTag(isPro){
+  return isPro ? ' <span class="pro-badge" title="PRO Member">💎 PRO</span>' : '';
+}
+function nameTag(username, isPro){
+  const o = ownerTag(username);
+  return o || proTag(isPro);
+}
+function timeAgo(ts){
+  const mins = Math.floor((Date.now()-ts)/60000);
+  if(mins<1) return 'abhi';
+  if(mins<60) return mins+'m pehle';
+  const hrs = Math.floor(mins/60);
+  if(hrs<24) return hrs+'h pehle';
+  return Math.floor(hrs/24)+'d pehle';
+}
+function getBadge(coins){
+  if(coins>=2500) return {emoji:'💎', label:'Diamond'};
+  if(coins>=1000) return {emoji:'🥇', label:'Gold'};
+  if(coins>=500) return {emoji:'🥈', label:'Silver'};
+  if(coins>=100) return {emoji:'🥉', label:'Bronze'};
+  return null;
+}
+function getAchievements(u, postCount){
+  const friendsCount = (u.friends||[]).length;
+  return [
+    {emoji:'🪙', label:'Pehla Kaam', unlocked: (u.coins||0)>0},
+    {emoji:'📝', label:'Pehli Post', unlocked: postCount>=1},
+    {emoji:'🤝', label:'5 Dost', unlocked: friendsCount>=5},
+    {emoji:'🔥', label:'7 Din Streak', unlocked: (u.streak||0)>=7},
+    {emoji:'🚀', label:'30 Din Streak', unlocked: (u.streak||0)>=30},
+    {emoji:'🎁', label:'5 Referral', unlocked: (u.referralCount||0)>=5},
+    {emoji:'💎', label:'PRO Member', unlocked: !!u.isPro},
+    {emoji:'🥇', label:'100+ Coins', unlocked: (u.coins||0)>=100},
+    {emoji:'👑', label:'1000+ Coins', unlocked: (u.coins||0)>=1000},
+  ];
+}
+function achievementsGridHtml(u, postCount){
+  const list = getAchievements(u, postCount);
+  return `
+    <div class="profile-section-label">Achievements 🏅</div>
+    <div class="achv-grid">
+      ${list.map(a=>`
+        <div class="achv-item ${a.unlocked?'':'locked'}">
+          <span class="achv-emoji">${a.emoji}</span>
+          <span class="achv-label">${a.label}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function firebaseErrorMsg(e){
+  const code = e && e.code;
+  if(code==='auth/email-already-in-use') return 'Ye username pehle se registered hai';
+  if(code==='auth/weak-password') return 'Password kam se kam 6 characters ka ho';
+  if(code==='auth/invalid-email') return 'Username mein sirf letters/numbers use karo';
+  if(code==='auth/user-not-found' || code==='auth/wrong-password' || code==='auth/invalid-credential') return 'Username ya password ghalat hai';
+  if(code==='auth/network-request-failed') return 'Internet connection check karo';
+  return 'Kuch masla hua, dobara try karo';
+}
+
+function showBrowserNotification(title, body, emojiIcon){
+  if(!('Notification' in window)) return;
+  if(Notification.permission!=='granted') return;
+  if(document.visibilityState==='visible' && currentTab==='chat') return; // already looking at chat, skip
+  try{
+    const n = new Notification(title, {body: body.slice(0,120), tag:'taskyaar-'+Date.now()});
+    n.onclick = ()=>{ window.focus(); n.close(); };
+  }catch(e){ /* non-fatal, some mobile browsers restrict direct Notification() */ }
+}
+
+async function requestNotifPermission(){
+  if(!('Notification' in window)){ toast('Ye browser notifications support nahi karta'); return; }
+  if(Notification.permission==='granted'){ toast('Notifications already on hain! 🔔'); return; }
+  if(Notification.permission==='denied'){ toast('Notifications block hain — browser settings se manually on karo'); return; }
+  try{
+    const perm = await Notification.requestPermission();
+    if(perm==='granted'){
+      toast('Notifications on ho gaye! 🔔🎉');
+      await registerForPushNotifications();
+      renderApp();
+    }
+    else toast('Notifications on nahi hue');
+  }catch(e){ toast('Kuch masla hua'); }
+}
+
+let presenceInterval = null;
+function startPresenceHeartbeat(){
+  if(presenceInterval) clearInterval(presenceInterval);
+  const updateSeen = ()=>{
+    if(!currentUser) return;
+    db.collection('users').doc(currentUser.uid).update({lastSeen:Date.now()}).catch(()=>{});
+  };
+  updateSeen();
+  presenceInterval = setInterval(updateSeen, 60000);
+}
+function isOnline(u){
+  return u && u.lastSeen && (Date.now()-u.lastSeen < 5*60*1000);
+}
+function onlineDotHtml(u){
+  return isOnline(u) ? `<span class="online-dot"></span>` : '';
+}
+
+async function registerForPushNotifications(){
+  if(FCM_VAPID_KEY==='YOUR_VAPID_KEY_HERE') return; // not configured yet
+  if(!('serviceWorker' in navigator) || !('Notification' in window)) return;
+  if(Notification.permission!=='granted') return;
+  try{
+    const registration = await navigator.serviceWorker.register('/taskyaar/firebase-messaging-sw.js');
+    const messaging = firebase.messaging();
+    const token = await messaging.getToken({vapidKey: FCM_VAPID_KEY, serviceWorkerRegistration: registration});
+    if(token){
+      await db.collection('users').doc(currentUser.uid).update({
+        fcmTokens: FieldValue.arrayUnion(token)
+      });
+    }
+  }catch(e){ console.error('FCM setup failed', e); }
+}
+
+function toast(msg){
+  const t = document.createElement('div');
+  t.className='toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),300); }, 2200);
+}
+function confettiBurst(){
+  const emojis = ['🎉','⭐','🪙','✨','🎊'];
+  for(let i=0;i<18;i++){
+    const el = document.createElement('div');
+    el.className='confetti-piece';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = Math.random()*100+'vw';
+    el.style.animationDuration = (1.6+Math.random()*1.2)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 3000);
+  }
+}
+
+/* ============ APP STATE ============ */
+let currentUser = null;      // cached Firestore user doc, includes uid
+let currentTab = 'feed';
+let openComments = {};
+let activeChatFriend = null; // friend uid
+let cachedPosts = [];
+let cachedAllUsers = [];
+let chatMessagesCache = [];
+let unreadTotal = 0;
+let notifUnread = 0;
+let previousTab = 'feed';
+let viewedProfileUid = null;
+let unsubscribeChat = null;
+let unsubscribeUnread = null;
+let unsubscribeNotif = null;
+let authMode = 'login';
+let selectedAvatar = AVATARS[0];
+let profileAvatarChoice = null;
+let authLoading = false;
+
+/* ============ AUTH SCREENS ============ */
+function renderAuth(){
+  app.innerHTML = `
+  <div class="auth-wrap">
+    <div class="auth-logo"><span class="emoji-stack">🎯🤝</span></div>
+    <div class="brand">Task<span>Yaar</span></div>
+    <div class="tagline">Kaam Karo • Josh Se • Reward Ke Sath</div>
+    <div class="card">
+      <div class="error-msg" id="errMsg"></div>
+      ${authMode==='login' ? renderLoginForm() : renderSignupForm()}
+    </div>
+    <div class="switch-line">
+      ${authMode==='login'
+        ? `Naya user ho? <a onclick="switchAuthMode('signup')">Account banao</a>`
+        : `Pehle se account hai? <a onclick="switchAuthMode('login')">Login karo</a>`}
+    </div>
+  </div>`;
+}
+
+function renderLoginForm(){
+  return `
+    <div class="field">
+      <label>Username</label>
+      <input id="loginUser" placeholder="apna username likho" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="loginPass" type="password" placeholder="password">
+    </div>
+    <button class="btn-primary" id="authBtn" onclick="doLogin()">Login Karo 🚀</button>
+  `;
+}
+
+function renderSignupForm(){
+  const avatarOptions = AVATARS.map((a,i)=>`<div class="avatar-opt ${i===0?'selected':''}" onclick="selectAvatar(this,'${a}')">${a}</div>`).join('');
+  return `
+    <div class="field">
+      <label>Poora Naam</label>
+      <input id="suName" placeholder="Apna naam likho">
+    </div>
+    <div class="field">
+      <label>Username</label>
+      <input id="suUser" placeholder="unique username" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="suPass" type="password" placeholder="kam se kam 6 characters">
+    </div>
+    <div class="field">
+      <label>Avatar Choose Karo</label>
+      <div class="avatar-picker">${avatarOptions}</div>
+    </div>
+    <div class="field">
+      <label>Referral Code (optional)</label>
+      <input id="suRef" placeholder="kisi dost ka username" value="${escapeHtml(refCodeFromUrl)}">
+      ${refCodeFromUrl ? `<div style="font-size:11.5px;font-weight:700;color:var(--teal-dark);margin-top:4px;">🎉 @${escapeHtml(refCodeFromUrl)} ke link se aaye ho — dono ko bonus coins milenge!</div>` : ''}
+    </div>
+    <button class="btn-primary" id="authBtn" onclick="doSignup()">Sign Up Karo ✨</button>
+  `;
+}
+
+function selectAvatar(el, a){
+  document.querySelectorAll('.auth-wrap .avatar-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAvatar = a;
+}
+
+function switchAuthMode(mode){
+  authMode = mode;
+  selectedAvatar = AVATARS[0];
+  renderAuth();
+}
+
+function showAuthError(msg){
+  const e = document.getElementById('errMsg');
+  if(!e) return;
+  e.textContent = msg;
+  e.style.display = 'block';
+}
+
+function setAuthLoading(loading, label){
+  const btn = document.getElementById('authBtn');
+  if(!btn) return;
+  authLoading = loading;
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.6' : '1';
+  if(loading) btn.textContent = label;
+}
+
+async function doLogin(){
+  if(authLoading) return;
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  if(!u || !p){ showAuthError('Username aur password dono likho'); return; }
+  showAuthError('');
+  setAuthLoading(true, 'Login ho raha hai...');
+  try{
+    await auth.signInWithEmailAndPassword(usernameToEmail(u), p);
+    // onAuthStateChanged will take over from here
+  }catch(e){
+    showAuthError(firebaseErrorMsg(e));
+    setAuthLoading(false, 'Login Karo 🚀');
+  }
+}
+
+async function doSignup(){
+  if(authLoading) return;
+  const name = document.getElementById('suName').value.trim();
+  let uname = document.getElementById('suUser').value.trim().toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_.-]/g,'');
+  const pass = document.getElementById('suPass').value;
+  const refCode = (document.getElementById('suRef')?.value||'').trim().toLowerCase();
+  if(!name || !uname || !pass){ showAuthError('Sab fields sahi se fill karo'); return; }
+  if(pass.length<6){ showAuthError('Password kam se kam 6 characters ka ho'); return; }
+  showAuthError('');
+  setAuthLoading(true, 'Account ban raha hai...');
+  try{
+    const dupSnap = await db.collection('users').where('username','==',uname).limit(1).get();
+    if(!dupSnap.empty){ showAuthError('Ye username pehle se maujood hai'); setAuthLoading(false,'Sign Up Karo ✨'); return; }
+
+    let referrer = null;
+    if(refCode && refCode!==uname){
+      const refSnap = await db.collection('users').where('username','==',refCode).limit(1).get();
+      if(!refSnap.empty) referrer = refSnap.docs[0].data();
+    }
+
+    const cred = await auth.createUserWithEmailAndPassword(usernameToEmail(uname), pass);
+    const uid = cred.user.uid;
+    const welcomeCoins = referrer ? REFERRAL_BONUS_NEWUSER : 0;
+    await db.collection('users').doc(uid).set({
+      uid, username:uname, name, avatar:selectedAvatar, bio:'Naya TaskYaar member!',
+      coins:welcomeCoins, streak:1, lastLogin:todayStr(), friends:[], tasksDone:{}, sponsoredDone:[], isPro:false,
+      referredBy: referrer ? referrer.uid : null, referralCount:0, referralEarnings:0, blockedUsers:[], lastSeen:Date.now(), fcmTokens:[], createdAt:Date.now()
+    });
+
+    if(referrer){
+      try{
+        await db.collection('users').doc(referrer.uid).update({
+          coins: FieldValue.increment(REFERRAL_BONUS_REFERRER),
+          referralCount: FieldValue.increment(1),
+          referralEarnings: FieldValue.increment(REFERRAL_BONUS_REFERRER)
+        });
+        await db.collection('notifications').add({
+          toUid: referrer.uid, type:'referral', fromUid: uid, fromName: name, avatar: selectedAvatar,
+          text: `ne aapke referral link se join kiya! +${REFERRAL_BONUS_REFERRER} coins 🎉`, time:Date.now(), read:false
+        });
+      }catch(e){ /* non-fatal */ }
+    }
+    // onAuthStateChanged will take over and render app
+  }catch(e){
+    showAuthError(firebaseErrorMsg(e));
+    setAuthLoading(false, 'Sign Up Karo ✨');
+  }
+}
+
+function doLogout(){
+  if(unsubscribeChat) unsubscribeChat();
+  if(unsubscribeUnread) unsubscribeUnread();
+  currentUser = null;
+  auth.signOut();
+}
+
+/* ============ AUTH STATE / STREAK ============ */
+auth.onAuthStateChanged(async fbUser=>{
+  if(fbUser){
+    try{
+      const doc = await db.collection('users').doc(fbUser.uid).get();
+      if(!doc.exists){ renderAuth(); return; }
+      const data = doc.data();
+      if(data.banned){
+        await auth.signOut();
+        app.innerHTML = `
+          <div class="banned-screen">
+            <div style="font-size:48px;">🚫</div>
+            <h2 style="color:var(--navy);">Account Suspend Kar Diya Gaya</h2>
+            <p style="color:#6b7d84;font-weight:700;line-height:1.6;">
+              Community guidelines follow na karne ki wajah se ye account suspend kiya gaya hai.
+              Agar lagta hai ye galti hai, owner se WhatsApp pe rabta karo.
+            </p>
+          </div>`;
+        return;
+      }
+      currentUser = data;
+      await handleStreak();
+      attachGlobalUnreadListener();
+      attachGlobalNotifListener();
+      startPresenceHeartbeat();
+      registerForPushNotifications();
+      currentTab = 'feed';
+      renderApp();
+    }catch(e){
+      renderAuth();
+    }
+  } else {
+    currentUser = null;
+    renderAuth();
+  }
+});
+
+async function handleStreak(){
+  const today = todayStr();
+  if(currentUser.lastLogin === today) return;
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const newStreak = (currentUser.lastLogin === yesterday) ? (currentUser.streak||0)+1 : 1;
+  const milestones = {7:50, 30:200, 100:1000};
+  const bonus = milestones[newStreak] || 0;
+  try{
+    const patch = {streak:newStreak, lastLogin:today};
+    if(bonus>0) patch.coins = FieldValue.increment(bonus);
+    await db.collection('users').doc(currentUser.uid).update(patch);
+    currentUser.streak = newStreak;
+    currentUser.lastLogin = today;
+    if(bonus>0){
+      currentUser.coins = (currentUser.coins||0) + bonus;
+      setTimeout(()=>{ confettiBurst(); toast(`🔥 ${newStreak} din streak! +${bonus} bonus coins mile!`); }, 600);
+    }
+  }catch(e){ /* non-fatal */ }
+}
+
+async function refreshCurrentUser(){
+  const doc = await db.collection('users').doc(currentUser.uid).get();
+  currentUser = doc.data();
+}
+
+/* ============ MAIN APP SHELL ============ */
+async function renderApp(){
+  if(!currentUser){ renderAuth(); return; }
+  app.innerHTML = `
+    <div class="topbar">
+      <div class="brand-mini">🎯 Task<span style="color:var(--teal)">Yaar</span></div>
+      <div class="stat-row">
+        <button class="bell-btn" id="bellBtn" onclick="openNotifications()">🔔</button>
+        <div class="stat-pill coin-pill">🪙 ${currentUser.coins}</div>
+        <div class="stat-pill streak-pill">🔥 ${currentUser.streak||1}</div>
+      </div>
+    </div>
+    <div id="sectionHost">${loadingHtml()}</div>
+    <div class="bottom-nav">
+      ${navBtn('feed','🏠','Home')}
+      ${navBtn('tasks','✅','Tasks')}
+      ${navBtn('chat','💬','Chat')}
+      ${navBtn('leaderboard','🏆','Rank')}
+      ${navBtn('friends','🤝','Network')}
+      ${navBtn('profile','👤','Profile')}
+    </div>
+  `;
+  updateNavBadgeDisplay();
+  await renderSection();
+}
+
+function loadingHtml(){
+  return `<div class="empty-state"><div class="spinner"></div>Load ho raha hai...</div>`;
+}
+
+function navBtn(tab, icon, label){
+  const wrapId = tab==='chat' ? ' id="chatNavIconWrap"' : '';
+  return `<button class="nav-btn ${currentTab===tab?'active':''}" onclick="switchTab('${tab}')">
+    <span class="nav-icon-wrap"${wrapId}><span class="nav-icon">${icon}</span></span><span class="tab-label">${label}</span>
+  </button>`;
+}
+
+function updateNavBadgeDisplay(){
+  const wrap = document.getElementById('chatNavIconWrap');
+  if(wrap){
+    const existing = wrap.querySelector('.nav-badge');
+    if(unreadTotal>0){
+      const text = unreadTotal>9?'9+':unreadTotal;
+      if(existing) existing.textContent = text;
+      else wrap.insertAdjacentHTML('beforeend', `<span class="nav-badge">${text}</span>`);
+    } else if(existing){ existing.remove(); }
+  }
+  const bell = document.getElementById('bellBtn');
+  if(bell){
+    const existing2 = bell.querySelector('.bell-badge');
+    if(notifUnread>0){
+      const text = notifUnread>9?'9+':notifUnread;
+      if(existing2) existing2.textContent = text;
+      else bell.insertAdjacentHTML('beforeend', `<span class="bell-badge">${text}</span>`);
+    } else if(existing2){ existing2.remove(); }
+  }
+}
+
+async function switchTab(tab){
+  if(currentTab!=='notifications') previousTab = currentTab;
+  currentTab = tab;
+  if(tab!=='chat'){ activeChatFriend=null; if(unsubscribeChat){ unsubscribeChat(); unsubscribeChat=null; } }
+  await renderApp();
+}
+
+function openNotifications(){
+  previousTab = currentTab;
+  currentTab = 'notifications';
+  renderApp();
+}
+
+function backFromNotifications(){
+  currentTab = previousTab;
+  renderApp();
+}
+
+async function renderSection(){
+  const host = document.getElementById('sectionHost');
+  try{
+    if(currentTab==='feed') host.innerHTML = await renderFeedSection();
+    else if(currentTab==='tasks') host.innerHTML = await renderTasksSection();
+    else if(currentTab==='chat') host.innerHTML = activeChatFriend ? await renderChatThreadInit(activeChatFriend) : await renderChatList();
+    else if(currentTab==='leaderboard') host.innerHTML = await renderLeaderboardSection();
+    else if(currentTab==='friends') host.innerHTML = await renderFriendsSection();
+    else if(currentTab==='profile') host.innerHTML = await renderProfileSection();
+    else if(currentTab==='notifications') host.innerHTML = await renderNotificationsSection();
+    else if(currentTab==='admin') host.innerHTML = await renderAdminSection();
+    else if(currentTab==='viewProfile') host.innerHTML = await renderViewProfileSection(viewedProfileUid);
+    if(currentTab==='chat' && activeChatFriend) attachChatListener(activeChatFriend);
+  }catch(e){
+    host.innerHTML = `<div class="empty-state"><span class="big-emoji">⚠️</span>Load nahi ho saka, internet check karo</div>`;
+  }
+}
+
+/* ============ FEED ============ */
+async function renderFeedSection(){
+  const snap = await db.collection('posts').orderBy('time','desc').limit(50).get();
+  const blocked = currentUser.blockedUsers||[];
+  cachedPosts = snap.docs.map(d=>({id:d.id, ...d.data()})).filter(p=>!blocked.includes(p.authorUid));
+  return buildFeedHtml(cachedPosts);
+}
+
+async function refreshFeed(){
+  const host = document.getElementById('sectionHost');
+  host.innerHTML = await renderFeedSection();
+  toast('Feed refresh ho gayi 🔄');
+}
+
+function buildFeedHtml(posts){
+  const postsHtml = posts.length ? posts.map(p=>renderPostCard(p)).join('') : `
+    <div class="empty-state"><span class="big-emoji">📭</span>Abhi koi post nahi hai<br>Sabse pehle tum likho!</div>`;
+  return `
+    <div class="section active">
+      <div class="composer">
+        <textarea id="postText" maxlength="500" placeholder="Aaj ka josh kya hai? Kuch share karo..."></textarea>
+        <div class="composer-actions">
+          <button class="share-btn" style="background:#FCFAF5;color:var(--navy);border-color:var(--line);margin-right:auto;" onclick="refreshFeed()">🔄 Refresh</button>
+          <button class="btn-post" onclick="submitPost()">Post Karo</button>
+        </div>
+      </div>
+      ${postsHtml}
+    </div>
+  `;
+}
+
+function renderPostCard(p){
+  const liked = (p.likes||[]).includes(currentUser.uid);
+  const isOpen = openComments[p.id];
+  const comments = p.comments||[];
+  const isOwner = currentUser.username && currentUser.username.toLowerCase()===OWNER_USERNAME;
+  const canDelete = p.authorUid===currentUser.uid || isOwner;
+  return `
+    <div class="post-card">
+      <div class="post-head">
+        <div class="post-avatar clickable-avatar" onclick="viewUserProfile('${p.authorUid}')">${p.avatar}</div>
+        <div style="flex:1;cursor:pointer;" onclick="viewUserProfile('${p.authorUid}')">
+          <div class="post-name">${escapeHtml(p.authorName)}${nameTag(p.authorUsername, p.authorIsPro)}</div>
+          <div class="post-time">${timeAgo(p.time)}</div>
+        </div>
+        ${canDelete ? `<button class="post-delete-btn" onclick="deletePost('${p.id}')">🗑️</button>` : ''}
+      </div>
+      <div class="post-text">${escapeHtml(p.text)}</div>
+      <div class="post-actions">
+        <button class="${liked?'liked':''}" onclick="toggleLike('${p.id}')">${liked?'❤️':'🤍'} ${(p.likes||[]).length}</button>
+        <button onclick="toggleComments('${p.id}')">💬 ${comments.length}</button>
+      </div>
+      <div class="comment-box ${isOpen?'open':''}" id="cbox-${p.id}">
+        ${comments.map(c=>`<div class="comment-item"><b>${escapeHtml(c.authorName)}:</b> ${escapeHtml(c.text)}</div>`).join('')}
+        <div class="comment-input-row">
+          <input id="cinput-${p.id}" placeholder="Comment likho...">
+          <button onclick="submitComment('${p.id}')">Send</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function submitPost(){
+  const el = document.getElementById('postText');
+  const txt = el.value.trim();
+  if(!txt) return;
+  el.disabled = true;
+  try{
+    await db.collection('posts').add({authorUid:currentUser.uid, authorUsername:currentUser.username, authorIsPro:currentUser.isPro||false, authorName:currentUser.name, avatar:currentUser.avatar, text:txt, time:Date.now(), likes:[], comments:[]});
+    await markTaskDone('t2', true);
+    toast('Post ho gayi! 📢');
+    renderApp();
+  }catch(e){ toast('Post save nahi hui, dobara try karo'); el.disabled=false; }
+}
+
+async function deletePost(postId){
+  if(!confirm('Ye post delete karni hai?')) return;
+  try{
+    await db.collection('posts').doc(postId).delete();
+    toast('Post delete ho gayi 🗑️');
+    renderApp();
+  }catch(e){ toast('Delete nahi hui, dobara try karo'); }
+}
+
+async function toggleLike(postId){
+  const post = cachedPosts.find(p=>p.id===postId);
+  if(!post) return;
+  const liked = (post.likes||[]).includes(currentUser.uid);
+  try{
+    await db.collection('posts').doc(postId).update({
+      likes: liked ? FieldValue.arrayRemove(currentUser.uid) : FieldValue.arrayUnion(currentUser.uid)
+    });
+    if(!liked){
+      await checkLikeTaskDB();
+      createNotification(post.authorUid, 'like', 'ne aapki post ko like kiya ❤️');
+    }
+    renderApp();
+  }catch(e){ toast('Like save nahi hui'); }
+}
+
+async function checkLikeTaskDB(){
+  const snap = await db.collection('posts').where('likes','array-contains',currentUser.uid).get();
+  if(snap.size>=3) await markTaskDone('t3', true);
+}
+
+function toggleComments(pid){
+  openComments[pid] = !openComments[pid];
+  document.getElementById('sectionHost').innerHTML = buildFeedHtml(cachedPosts);
+}
+
+async function submitComment(pid){
+  const input = document.getElementById('cinput-'+pid);
+  const txt = input.value.trim();
+  if(!txt) return;
+  const post = cachedPosts.find(p=>p.id===pid);
+  try{
+    await db.collection('posts').doc(pid).update({
+      comments: FieldValue.arrayUnion({authorName:currentUser.name, text:txt, time:Date.now()})
+    });
+    await markTaskDone('t5', true);
+    if(post) createNotification(post.authorUid, 'comment', 'ne aapki post pe comment kiya 💬');
+    openComments[pid] = true;
+    renderApp();
+  }catch(e){ toast('Comment save nahi hui'); }
+}
+
+/* ============ TASKS ============ */
+const DAY_MS = 24*60*60*1000;
+function getTaskCooldownRemaining(taskId){
+  const claims = currentUser.taskClaims || {};
+  const last = claims[taskId];
+  if(!last) return 0;
+  const remaining = DAY_MS - (Date.now() - last);
+  return remaining>0 ? remaining : 0;
+}
+function formatCooldown(ms){
+  const totalMin = Math.max(1, Math.ceil(ms/60000));
+  const h = Math.floor(totalMin/60);
+  const m = totalMin%60;
+  return h>0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+async function markTaskDone(taskId, silent){
+  if(!currentUser || getTaskCooldownRemaining(taskId)>0) return;
+  const task = TASKS.find(t=>t.id===taskId);
+  const rewardAmt = currentUser.isPro ? Math.round(task.reward*1.5) : task.reward;
+  try{
+    await db.collection('users').doc(currentUser.uid).update({
+      [`taskClaims.${taskId}`]: Date.now(),
+      coins: FieldValue.increment(rewardAmt)
+    });
+    await refreshCurrentUser();
+    if(!silent){ confettiBurst(); toast(`+${rewardAmt} coins! ${task.title} complete ✅`); }
+    if(!silent) renderApp();
+  }catch(e){ /* non-fatal */ }
+}
+
+async function renderTasksSection(){
+  const tasksHtml = TASKS.map(t=>{
+    const remaining = getTaskCooldownRemaining(t.id);
+    const locked = remaining>0;
+    return `
+      <div class="task-card ${locked?'done':''}">
+        <div class="task-emoji">${t.emoji}</div>
+        <div class="task-body">
+          <div class="task-title">${t.title}</div>
+          <div class="task-reward">🪙 +${t.reward} coins</div>
+        </div>
+        ${locked
+          ? `<div class="task-btn done-btn">⏳ ${formatCooldown(remaining)}</div>`
+          : (t.id==='t1' || t.id==='t4' || t.id==='t6'
+              ? `<button class="task-btn" onclick="quickCompleteTask('${t.id}')">Claim</button>`
+              : `<div class="task-btn" style="background:#EAEAEA;color:#93a1a6;box-shadow:none;">Auto</div>`)
+        }
+      </div>
+    `;
+  }).join('');
+  let sponsoredHtml = '';
+  try{
+    const snap = await db.collection('sponsoredTasks').where('active','==',true).get();
+    const sponsored = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    const doneSponsored = currentUser.sponsoredDone || [];
+    if(sponsored.length){
+      sponsoredHtml = `<div class="admin-section-title">Sponsored Tasks 💰</div>` + sponsored.map(s=>{
+        const done = doneSponsored.includes(s.id);
+        return `
+          <div class="sponsor-card">
+            <span class="sponsor-tag">${escapeHtml(s.sponsorName||'Sponsor')}</span>
+            <div class="task-emoji">${s.emoji||'⭐'}</div>
+            <div class="task-body">
+              <div class="task-title">${escapeHtml(s.title)}</div>
+              <div class="task-reward">🪙 +${s.reward} coins</div>
+            </div>
+            ${done
+              ? `<div class="task-btn done-btn">Ho gaya ✅</div>`
+              : `<button class="task-btn" onclick="openSponsoredTask(this,'${s.id}','${(s.link||'').replace(/'/g,"\\'")}')">Open</button>`
+            }
+          </div>
+        `;
+      }).join('');
+    }
+  }catch(e){ /* non-fatal */ }
+  return `
+    <div class="section active">
+      <div class="streak-banner">
+        <div><div style="font-weight:800;font-size:13px;">Tumhari Streak</div><div class="big">🔥 ${currentUser.streak||1} din</div></div>
+        <div style="font-size:34px;">🔥</div>
+      </div>
+      <div class="section-title">Aaj Ke Tasks</div>
+      ${tasksHtml}
+      ${sponsoredHtml}
+    </div>
+  `;
+}
+
+function openSponsoredTask(btn, taskId, link){
+  if(btn.textContent.trim()==='Open'){
+    if(link) window.open(link, '_blank');
+    btn.textContent = 'Claim Reward';
+    return;
+  }
+  claimSponsoredTask(taskId);
+}
+
+async function claimSponsoredTask(taskId){
+  const snap = await db.collection('sponsoredTasks').doc(taskId).get();
+  if(!snap.exists) return;
+  const task = snap.data();
+  try{
+    await db.collection('users').doc(currentUser.uid).update({
+      sponsoredDone: FieldValue.arrayUnion(taskId),
+      coins: FieldValue.increment(task.reward)
+    });
+    await refreshCurrentUser();
+    confettiBurst();
+    toast(`+${task.reward} coins! Sponsored task complete ✅`);
+    renderApp();
+  }catch(e){ toast('Claim nahi hua, dobara try karo'); }
+}
+
+async function quickCompleteTask(taskId){
+  if(taskId==='t1'){ switchTab('profile'); toast('Profile section mein bio/avatar update karo'); return; }
+  if(taskId==='t4'){ switchTab('friends'); toast('Kisi ko add karke ye task complete hoga'); return; }
+  await markTaskDone(taskId, false);
+}
+
+/* ============ LEADERBOARD ============ */
+async function renderLeaderboardSection(){
+  const snap = await db.collection('users').orderBy('coins','desc').limit(50).get();
+  const list = snap.docs.map(d=>d.data());
+  const rowsHtml = list.map((u,i)=>{
+    const rank = i+1;
+    const rankClass = rank===1?'top1':rank===2?'top2':rank===3?'top3':'';
+    const rankIcon = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const isMe = u.uid===currentUser.uid;
+    return `
+      <div class="lb-row ${isMe?'lb-you':''} clickable-avatar" onclick="viewUserProfile('${u.uid}')">
+        <div class="lb-rank ${rankClass}">${rankIcon}</div>
+        <div class="avatar-wrap"><div class="lb-avatar">${u.avatar}</div>${onlineDotHtml(u)}</div>
+        <div class="lb-name">${escapeHtml(u.name)}${nameTag(u.username, u.isPro)}${isMe?' (Tum)':''}</div>
+        <div class="lb-coins">🪙 ${u.coins}</div>
+      </div>
+    `;
+  }).join('');
+  return `<div class="section active"><div class="section-title">Leaderboard 🏆</div>${rowsHtml}</div>`;
+}
+
+/* ============ FRIENDS / NETWORK ============ */
+let sentRequestUids = [];
+let receivedRequests = []; // {id, fromUid}
+
+async function renderFriendsSection(){
+  const [usersSnap, sentSnap, recvSnap] = await Promise.all([
+    db.collection('users').get(),
+    db.collection('friendRequests').where('fromUid','==',currentUser.uid).where('status','==','pending').get(),
+    db.collection('friendRequests').where('toUid','==',currentUser.uid).where('status','==','pending').get()
+  ]);
+  cachedAllUsers = usersSnap.docs.map(d=>d.data()).filter(u=>u.uid!==currentUser.uid && !(currentUser.blockedUsers||[]).includes(u.uid));
+  sentRequestUids = sentSnap.docs.map(d=>d.data().toUid);
+  receivedRequests = recvSnap.docs.map(d=>({id:d.id, fromUid:d.data().fromUid}));
+  return buildFriendsHtml(cachedAllUsers);
+}
+
+function buildFriendsHtml(list){
+  const rowsHtml = list.map(u=>friendRowHtml(u)).join('') || `<div class="empty-state"><span class="big-emoji">🌱</span>Abhi koi aur user nahi hai</div>`;
+  return `
+    <div class="section active">
+      <div class="section-title">Network Banao 🤝</div>
+      <input class="search-bar" placeholder="Users dhoondo..." oninput="filterFriendsLocal(this.value)">
+      <div id="friendsList">${rowsHtml}</div>
+    </div>
+  `;
+}
+
+function friendRowHtml(u){
+  const isFriend = (currentUser.friends||[]).includes(u.uid);
+  const requestedByMe = sentRequestUids.includes(u.uid);
+  const theirRequest = receivedRequests.find(r=>r.fromUid===u.uid);
+  let actionBtn;
+  if(isFriend){
+    actionBtn = `<button class="friend-btn added" onclick="removeFriend('${u.uid}')">Added ✓</button>`;
+  } else if(theirRequest){
+    actionBtn = `<button class="friend-btn add" onclick="acceptFriendRequest('${theirRequest.id}','${u.uid}')">Accept ✅</button>`;
+  } else if(requestedByMe){
+    actionBtn = `<button class="friend-btn added" onclick="cancelFriendRequest('${u.uid}')">Requested ⏳</button>`;
+  } else {
+    actionBtn = `<button class="friend-btn add" onclick="sendFriendRequest('${u.uid}')">+ Add</button>`;
+  }
+  return `
+    <div class="friend-row">
+      <div class="avatar-wrap"><div class="post-avatar clickable-avatar" style="width:38px;height:38px;font-size:20px;" onclick="viewUserProfile('${u.uid}')">${u.avatar}</div>${onlineDotHtml(u)}</div>
+      <div class="friend-name clickable-avatar" onclick="viewUserProfile('${u.uid}')">${escapeHtml(u.name)}${nameTag(u.username, u.isPro)}</div>
+      <div class="friend-actions">
+        <button class="friend-btn report" onclick="blockUser('${u.uid}','${escapeHtml(u.name).replace(/'/g,"\\'")}')" title="Block">🚫</button>
+        <button class="friend-btn report" onclick="reportUser('${u.uid}','${escapeHtml(u.name).replace(/'/g,"\\'")}')" title="Report">🚩</button>
+        ${isFriend ? `<button class="friend-btn msg" onclick="openChat('${u.uid}')">💬</button>` : ''}
+        ${actionBtn}
+      </div>
+    </div>
+  `;
+}
+
+function filterFriendsLocal(q){
+  q = q.toLowerCase();
+  const filtered = cachedAllUsers.filter(u=>u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q));
+  const rowsHtml = filtered.map(u=>friendRowHtml(u)).join('') || `<div class="empty-state"><span class="big-emoji">🔍</span>Koi match nahi mila</div>`;
+  document.getElementById('friendsList').innerHTML = rowsHtml;
+}
+
+async function reportUser(targetUid, targetName){
+  const reason = prompt(`${targetName} ko report karne ki wajah likho (optional):`);
+  if(reason===null) return; // user cancelled
+  try{
+    await db.collection('reports').add({
+      reportedUid: targetUid, reportedName: targetName,
+      reportedByUid: currentUser.uid, reportedByName: currentUser.name,
+      reason: reason || 'Koi wajah nahi di gayi', time: Date.now(), status:'pending'
+    });
+    toast('Report bhej di gayi, shukriya 🚩');
+  }catch(e){ toast('Report bhejne mein masla hua'); }
+}
+
+async function blockUser(targetUid, targetName){
+  if(!confirm(`${targetName} ko block karna hai? Wo tumhare Network/Feed mein nahi dikhega aur tum unse chat nahi kar sakoge.`)) return;
+  try{
+    await db.collection('users').doc(currentUser.uid).update({
+      blockedUsers: FieldValue.arrayUnion(targetUid),
+      friends: FieldValue.arrayRemove(targetUid)
+    });
+    await refreshCurrentUser();
+    toast(`${targetName} ko block kar diya 🚫`);
+    switchTab('friends');
+  }catch(e){ toast('Kuch masla hua, dobara try karo'); }
+}
+
+async function unblockUser(targetUid){
+  try{
+    await db.collection('users').doc(currentUser.uid).update({
+      blockedUsers: FieldValue.arrayRemove(targetUid)
+    });
+    await refreshCurrentUser();
+    toast('Unblock kar diya ✅');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua'); }
+}
+
+async function sendFriendRequest(uid){
+  try{
+    const reqRef = await db.collection('friendRequests').add({
+      fromUid: currentUser.uid, fromName: currentUser.name, fromAvatar: currentUser.avatar,
+      toUid: uid, status:'pending', time: Date.now()
+    });
+    await db.collection('notifications').add({
+      toUid: uid, type:'friendRequest', fromUid: currentUser.uid, fromName: currentUser.name,
+      avatar: currentUser.avatar, text:'ne aapko friend request bheji 🤝', reqId: reqRef.id, time: Date.now(), read:false
+    });
+    toast('Friend request bhej di! 🤝');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua, dobara try karo'); }
+}
+
+async function cancelFriendRequest(uid){
+  try{
+    const snap = await db.collection('friendRequests').where('fromUid','==',currentUser.uid).where('toUid','==',uid).where('status','==','pending').get();
+    const batch = db.batch();
+    snap.forEach(d=> batch.delete(d.ref));
+    await batch.commit();
+    toast('Request cancel kar di');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua'); }
+}
+
+async function acceptFriendRequest(reqId, fromUid){
+  try{
+    const batch = db.batch();
+    batch.update(db.collection('friendRequests').doc(reqId), {status:'accepted'});
+    batch.update(db.collection('users').doc(currentUser.uid), {friends: FieldValue.arrayUnion(fromUid)});
+    batch.update(db.collection('users').doc(fromUid), {friends: FieldValue.arrayUnion(currentUser.uid)});
+    await batch.commit();
+    await refreshCurrentUser();
+    await markTaskDone('t4', true);
+    confettiBurst();
+    toast('Naye dost ban gaye! +25 coins 🎉');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua, dobara try karo'); }
+}
+
+async function rejectFriendRequest(reqId){
+  try{
+    await db.collection('friendRequests').doc(reqId).update({status:'rejected'});
+    toast('Request reject kar di');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua'); }
+}
+
+async function removeFriend(uid){
+  if(!confirm('Is dost ko remove karna hai?')) return;
+  try{
+    const batch = db.batch();
+    batch.update(db.collection('users').doc(currentUser.uid), {friends: FieldValue.arrayRemove(uid)});
+    batch.update(db.collection('users').doc(uid), {friends: FieldValue.arrayRemove(currentUser.uid)});
+    await batch.commit();
+    await refreshCurrentUser();
+    renderApp();
+  }catch(e){ toast('Kuch masla hua, dobara try karo'); }
+}
+
+/* ============ NOTIFICATIONS ============ */
+async function createNotification(toUid, type, text){
+  if(!toUid || toUid===currentUser.uid) return; // don't notify yourself
+  try{
+    await db.collection('notifications').add({
+      toUid, type, fromName: currentUser.name, avatar: currentUser.avatar, text, time: Date.now(), read:false
+    });
+  }catch(e){ /* non-fatal */ }
+}
+
+function attachGlobalNotifListener(){
+  if(unsubscribeNotif) unsubscribeNotif();
+  let firstLoad = true;
+  unsubscribeNotif = db.collection('notifications').where('toUid','==',currentUser.uid)
+    .onSnapshot(snap=>{
+      if(!firstLoad){
+        snap.docChanges().forEach(ch=>{
+          if(ch.type==='added'){
+            const n = ch.doc.data();
+            if(!n.read && currentTab!=='notifications'){
+              showBrowserNotification('🔔 TaskYaar', `${n.fromName} ${n.text}`, n.avatar);
+              toast(`🔔 ${n.fromName} ${n.text}`);
+            }
+          }
+        });
+      }
+      firstLoad = false;
+      notifUnread = snap.docs.filter(d=>!d.data().read).length;
+      updateNavBadgeDisplay();
+    }, e=>{ /* non-fatal */ });
+}
+
+async function renderNotificationsSection(){
+  const [snap, recvSnap] = await Promise.all([
+    db.collection('notifications').where('toUid','==',currentUser.uid).get(),
+    db.collection('friendRequests').where('toUid','==',currentUser.uid).where('status','==','pending').get()
+  ]);
+  const list = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>b.time-a.time).slice(0,50);
+  const pendingReqIds = new Set(recvSnap.docs.map(d=>d.id));
+  const iconFor = {like:'❤️', comment:'💬', friend:'🤝', friendRequest:'🤝', referral:'🎁'};
+  const rows = list.length ? list.map(n=>{
+    const showActions = n.type==='friendRequest' && n.reqId && pendingReqIds.has(n.reqId);
+    return `
+    <div class="notif-row ${n.read?'':'unread'}">
+      <div class="notif-icon">${n.avatar||iconFor[n.type]||'🔔'}</div>
+      <div style="flex:1;">
+        <div class="notif-text"><b>${escapeHtml(n.fromName)}</b> ${escapeHtml(n.text)}</div>
+        <div class="notif-time">${timeAgo(n.time)}</div>
+        ${showActions ? `
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="mini-btn approve" onclick="acceptFriendRequest('${n.reqId}','${n.fromUid}')">✅ Accept</button>
+            <button class="mini-btn reject" onclick="rejectFriendRequest('${n.reqId}')">❌ Reject</button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+  }).join('') : `<div class="empty-state"><span class="big-emoji">🔔</span>Abhi koi notification nahi hai</div>`;
+  markNotifsRead(list);
+  return `
+    <div class="section active">
+      <div class="thread-header">
+        <button class="back-btn" onclick="backFromNotifications()">←</button>
+        <div class="thread-name">Notifications 🔔</div>
+      </div>
+      ${rows}
+    </div>
+  `;
+}
+
+async function markNotifsRead(list){
+  const unread = list.filter(n=>!n.read);
+  if(unread.length===0) return;
+  try{
+    const batch = db.batch();
+    unread.forEach(n=> batch.update(db.collection('notifications').doc(n.id), {read:true}));
+    await batch.commit();
+  }catch(e){ /* non-fatal */ }
+}
+
+/* ============ CHAT (REAL-TIME) ============ */
+function attachGlobalUnreadListener(){
+  if(unsubscribeUnread) unsubscribeUnread();
+  let firstLoad = true;
+  unsubscribeUnread = db.collection('messages').where('to','==',currentUser.uid)
+    .onSnapshot(snap=>{
+      if(!firstLoad){
+        snap.docChanges().forEach(ch=>{
+          if(ch.type==='added'){
+            const m = ch.doc.data();
+            const viewingThisChat = currentTab==='chat' && activeChatFriend===m.from;
+            if(!m.read && m.from!==currentUser.uid && !viewingThisChat){
+              showBrowserNotification('💬 Naya Message', m.text||'Aapko naya message aaya hai');
+              db.collection('users').doc(m.from).get().then(d=>{
+                const senderName = d.exists ? d.data().name : 'Kisi ne';
+                toast(`💬 ${senderName}: ${(m.text||'').slice(0,40)}`);
+              }).catch(()=>{ toast('💬 Naya message aaya hai!'); });
+            }
+          }
+        });
+      }
+      firstLoad = false;
+      unreadTotal = snap.docs.filter(d=>!d.data().read).length;
+      updateNavBadgeDisplay();
+    }, e=>{ /* non-fatal */ });
+}
+
+async function getLastMessageAndUnread(friendUid){
+  const key = chatKey(currentUser.uid, friendUid);
+  const snap = await db.collection('messages').where('chatId','==',key).get();
+  const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>a.time-b.time);
+  const last = msgs[msgs.length-1] || null;
+  const unread = msgs.filter(m=>m.to===currentUser.uid && !m.read).length;
+  return {last, unread};
+}
+
+async function renderChatList(){
+  const friendUids = currentUser.friends||[];
+  if(friendUids.length===0){
+    return `
+      <div class="section active">
+        <div class="section-title">Chats 💬</div>
+        <div class="empty-state"><span class="big-emoji">🤝</span>Pehle Network tab se dost banao,<br>phir unse chat kar sakoge!</div>
+      </div>
+    `;
+  }
+  const friendDocs = await Promise.all(friendUids.map(uid=>db.collection('users').doc(uid).get()));
+  const friends = friendDocs.filter(d=>d.exists).map(d=>d.data());
+  const extras = await Promise.all(friends.map(f=>getLastMessageAndUnread(f.uid)));
+  const rows = friends.map((f,i)=>{
+    const {last, unread} = extras[i];
+    return `
+      <div class="chat-list-row" onclick="openChat('${f.uid}')">
+        <div class="avatar-wrap"><div class="post-avatar">${f.avatar}</div>${onlineDotHtml(f)}</div>
+        <div class="chat-info">
+          <div class="chat-name-row">
+            <span class="chat-name">${escapeHtml(f.name)}${nameTag(f.username, f.isPro)}</span>
+            ${last ? `<span class="chat-time">${timeAgo(last.time)}</span>` : ''}
+          </div>
+          <div class="chat-preview">${last ? (last.from===currentUser.uid?'Tum: ':'') + escapeHtml(last.text) : 'Chat shuru karo 👋'}</div>
+        </div>
+        ${unread>0 ? `<div class="unread-dot">${unread}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+  return `<div class="section active"><div class="section-title">Chats 💬</div>${rows}</div>`;
+}
+
+function openChat(friendUid){
+  activeChatFriend = friendUid;
+  currentTab = 'chat';
+  renderApp();
+}
+
+function backToChatList(){
+  activeChatFriend = null;
+  if(unsubscribeChat){ unsubscribeChat(); unsubscribeChat=null; }
+  renderApp();
+}
+
+async function renderChatThreadInit(friendUid){
+  const doc = await db.collection('users').doc(friendUid).get();
+  if(!doc.exists){ activeChatFriend=null; return await renderChatList(); }
+  const friend = doc.data();
+  return `
+    <div class="section active thread-body">
+      <div class="thread-header">
+        <button class="back-btn" onclick="backToChatList()">←</button>
+        <div class="avatar-wrap"><div class="thread-avatar">${friend.avatar}</div>${onlineDotHtml(friend)}</div>
+        <div class="thread-name" style="flex:1;">${escapeHtml(friend.name)}${nameTag(friend.username, friend.isPro)}</div>
+        <button class="friend-btn report" onclick="reportUser('${friend.uid}','${escapeHtml(friend.name).replace(/'/g,"\\'")}')" title="Report">🚩</button>
+      </div>
+      <div class="thread-messages" id="threadMsgs">${loadingHtml()}</div>
+    </div>
+    <div class="chat-input-bar">
+      <input id="chatInput" placeholder="Message likho..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+      <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+    </div>
+  `;
+}
+
+function attachChatListener(friendUid){
+  if(unsubscribeChat) unsubscribeChat();
+  const key = chatKey(currentUser.uid, friendUid);
+  unsubscribeChat = db.collection('messages').where('chatId','==',key)
+    .onSnapshot(snap=>{
+      chatMessagesCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>a.time-b.time);
+      renderThreadMessages();
+      markMessagesRead(friendUid);
+    }, e=>{ /* non-fatal */ });
+}
+
+function renderThreadMessages(){
+  const box = document.getElementById('threadMsgs');
+  if(!box) return;
+  box.innerHTML = chatMessagesCache.length ? chatMessagesCache.map(m=>`
+    <div class="msg-bubble ${m.from===currentUser.uid?'msg-mine':'msg-theirs'}">
+      ${escapeHtml(m.text)}
+      <span class="msg-time">${new Date(m.time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</span>
+    </div>
+  `).join('') : `<div class="empty-state"><span class="big-emoji">👋</span>Salam bolo, baat shuru karo!</div>`;
+  box.scrollTop = box.scrollHeight;
+}
+
+async function markMessagesRead(friendUid){
+  const unreadMsgs = chatMessagesCache.filter(m=>m.to===currentUser.uid && m.from===friendUid && !m.read);
+  if(unreadMsgs.length===0) return;
+  try{
+    const batch = db.batch();
+    unreadMsgs.forEach(m=> batch.update(db.collection('messages').doc(m.id), {read:true}));
+    await batch.commit();
+  }catch(e){ /* non-fatal */ }
+}
+
+async function sendChatMessage(){
+  const input = document.getElementById('chatInput');
+  const txt = input.value.trim();
+  if(!txt || !activeChatFriend) return;
+  input.value = '';
+  try{
+    await db.collection('messages').add({
+      chatId: chatKey(currentUser.uid, activeChatFriend),
+      from: currentUser.uid, to: activeChatFriend, text: txt, time: Date.now(), read:false
+    });
+  }catch(e){ toast('Message send nahi hui, dobara try karo'); }
+}
+
+/* ============ PROFILE ============ */
+/* ============ VIEW OTHER USER PROFILE ============ */
+function viewUserProfile(uid){
+  if(uid===currentUser.uid){ switchTab('profile'); return; }
+  viewedProfileUid = uid;
+  previousTab = currentTab;
+  currentTab = 'viewProfile';
+  renderApp();
+}
+
+async function renderViewProfileSection(uid){
+  const doc = await db.collection('users').doc(uid).get();
+  if(!doc.exists){
+    return `<div class="section active"><div class="empty-state"><span class="big-emoji">🤷</span>User nahi mila</div></div>`;
+  }
+  const u = doc.data();
+  const badge = getBadge(u.coins);
+  const isFriend = (currentUser.friends||[]).includes(u.uid);
+  let postCount = 0;
+  try{
+    const psnap = await db.collection('posts').where('authorUid','==',u.uid).get();
+    postCount = psnap.size;
+  }catch(e){}
+  let friendBtnHtml;
+  if(isFriend){
+    friendBtnHtml = `<button class="friend-btn added" style="flex:1;padding:12px;" onclick="removeFriend('${u.uid}')">Added ✓</button>`;
+  } else {
+    const [sentSnap, recvSnap] = await Promise.all([
+      db.collection('friendRequests').where('fromUid','==',currentUser.uid).where('toUid','==',u.uid).where('status','==','pending').limit(1).get(),
+      db.collection('friendRequests').where('fromUid','==',u.uid).where('toUid','==',currentUser.uid).where('status','==','pending').limit(1).get()
+    ]);
+    if(!recvSnap.empty){
+      friendBtnHtml = `<button class="friend-btn add" style="flex:1;padding:12px;" onclick="acceptFriendRequest('${recvSnap.docs[0].id}','${u.uid}')">Accept ✅</button>`;
+    } else if(!sentSnap.empty){
+      friendBtnHtml = `<button class="friend-btn added" style="flex:1;padding:12px;" onclick="cancelFriendRequest('${u.uid}')">Requested ⏳</button>`;
+    } else {
+      friendBtnHtml = `<button class="friend-btn add" style="flex:1;padding:12px;" onclick="sendFriendRequest('${u.uid}')">+ Add Friend</button>`;
+    }
+  }
+  return `
+    <div class="section active">
+      <div class="thread-header">
+        <button class="back-btn" onclick="switchTab('${previousTab}')">←</button>
+        <div class="thread-name">Profile</div>
+      </div>
+      <div class="profile-head">
+        <div class="avatar-wrap"><div class="profile-avatar">${u.avatar}</div>${onlineDotHtml(u)}</div>
+        <div class="profile-name">${escapeHtml(u.name)}${nameTag(u.username, u.isPro)}</div>
+        <div class="profile-bio">${escapeHtml(u.bio||'')}</div>
+        <div class="profile-badges">
+          ${badge ? `<div class="badge-chip">${badge.emoji} ${badge.label}</div>` : ''}
+          <div class="badge-chip">🔥 ${u.streak||1} din streak</div>
+          <div class="badge-chip">🤝 ${(u.friends||[]).length} dost</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="num">${u.coins}</div><div class="lbl">Coins</div></div>
+        <div class="stat-box"><div class="num">${(u.friends||[]).length}</div><div class="lbl">Friends</div></div>
+        <div class="stat-box"><div class="num">${postCount}</div><div class="lbl">Posts</div></div>
+      </div>
+      ${achievementsGridHtml(u, postCount)}
+      <div class="view-profile-btns">
+        ${friendBtnHtml}
+        ${isFriend ? `<button class="friend-btn msg" style="flex:1;padding:12px;" onclick="openChat('${u.uid}')">💬 Message</button>` : ''}
+      </div>
+      <div style="display:flex;gap:10px;margin-top:10px;">
+        <button class="friend-btn report" style="flex:1;padding:10px;border:2px solid var(--line);border-radius:12px;" onclick="blockUser('${u.uid}','${escapeHtml(u.name).replace(/'/g,"\\'")}')">🚫 Block</button>
+        <button class="friend-btn report" style="flex:1;padding:10px;border:2px solid var(--line);border-radius:12px;" onclick="reportUser('${u.uid}','${escapeHtml(u.name).replace(/'/g,"\\'")}')">🚩 Report</button>
+      </div>
+    </div>
+  `;
+}
+
+async function renderProfileSection(){
+  const badge = getBadge(currentUser.coins);
+  let postCount = 0;
+  try{
+    const snap = await db.collection('posts').where('authorUid','==',currentUser.uid).get();
+    postCount = snap.size;
+  }catch(e){}
+  const memberSinceDate = currentUser.createdAt ? new Date(currentUser.createdAt) : new Date();
+  const memberSinceStr = memberSinceDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+  let blockedListHtml = '';
+  const blockedIds = currentUser.blockedUsers||[];
+  if(blockedIds.length){
+    try{
+      const blockedDocs = await Promise.all(blockedIds.map(uid=>db.collection('users').doc(uid).get()));
+      const blockedUsersData = blockedDocs.filter(d=>d.exists).map(d=>d.data());
+      blockedListHtml = `
+        <div class="profile-section-label">Blocked Users (${blockedUsersData.length})</div>
+        ${blockedUsersData.map(u=>`
+          <div class="admin-row">
+            <div style="font-size:18px;">${u.avatar}</div>
+            <div class="rinfo"><b>${escapeHtml(u.name)}</b></div>
+            <button class="mini-btn toggle" onclick="unblockUser('${u.uid}')">Unblock</button>
+          </div>
+        `).join('')}
+      `;
+    }catch(e){ /* non-fatal */ }
+  }
+
+  let proBoxHtml = '';
+  if(currentUser.isPro){
+    proBoxHtml = `
+      <div class="pro-box">
+        <div class="pt">💎 Tum TaskYaar PRO ho!</div>
+        <div style="font-size:13px;font-weight:700;color:#cfe0e6;">Sab tasks pe 1.5x coins mil rahe hain. Shukriya! 🎉</div>
+      </div>
+    `;
+  } else {
+    let hasPending = false;
+    try{
+      const psnap = await db.collection('proRequests').where('userUid','==',currentUser.uid).where('status','==','pending').limit(1).get();
+      hasPending = !psnap.empty;
+    }catch(e){}
+    proBoxHtml = `
+      <div class="pro-box">
+        <div class="pt">💎 TaskYaar PRO Lo</div>
+        <ul>
+          <li>Sab tasks pe 1.5x coins</li>
+          <li>Naam ke sath PRO badge</li>
+          <li>App ko support karo</li>
+        </ul>
+        <div class="price">Rs. 200 / one-time</div>
+        <div class="pro-pay-info">
+          WhatsApp pe seedha baat karo, payment details wahan mil jayengi. Contact karte hi tumhari request bhi automatically bhej di jayegi.
+        </div>
+        ${hasPending
+          ? `<button class="share-btn" disabled style="opacity:.6;">⏳ Review ho raha hai...</button>`
+          : `<button class="share-btn" onclick="contactForPro()">📱 WhatsApp Pe Contact Karo</button>`
+        }
+      </div>
+    `;
+  }
+
+  const isOwner = currentUser.username && currentUser.username.toLowerCase()===OWNER_USERNAME;
+
+  return `
+    <div class="section active">
+      <div class="profile-head">
+        <div class="profile-avatar">${currentUser.avatar}</div>
+        <div class="profile-name">${escapeHtml(currentUser.name)}${nameTag(currentUser.username, currentUser.isPro)}</div>
+        <div class="profile-bio">${escapeHtml(currentUser.bio||'')}</div>
+        <div class="profile-badges">
+          ${badge ? `<div class="badge-chip">${badge.emoji} ${badge.label}</div>` : ''}
+          <div class="badge-chip">🔥 ${currentUser.streak||1} din streak</div>
+          <div class="badge-chip">🤝 ${(currentUser.friends||[]).length} dost</div>
+          <div class="badge-chip">📅 ${memberSinceStr}</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="num">${currentUser.coins}</div><div class="lbl">Coins</div></div>
+        <div class="stat-box"><div class="num">${(currentUser.friends||[]).length}</div><div class="lbl">Friends</div></div>
+        <div class="stat-box"><div class="num">${postCount}</div><div class="lbl">Posts</div></div>
+      </div>
+      ${achievementsGridHtml(currentUser, postCount)}
+      <div class="share-box">
+        <div class="st">🎁 Referral Program</div>
+        <div style="font-size:12.5px;font-weight:700;color:#e8e2ff;line-height:1.6;margin-bottom:10px;">
+          Apna link doston ko bhejo — jab wo signup karein, <b>tumhe +${REFERRAL_BONUS_REFERRER} coins</b> aur <b>unhe +${REFERRAL_BONUS_NEWUSER} coins</b> milenge!<br>
+          Ab tak <b>${currentUser.referralCount||0} dost</b> laaye ho, <b>${currentUser.referralEarnings||0} coins</b> kamaye 🪙
+        </div>
+        <button class="share-btn" onclick="shareApp()">🔗 Referral Link Share Karo</button>
+      </div>
+      ${proBoxHtml}
+      ${isOwner ? `<button class="admin-link-btn" onclick="switchTab('admin')">⚙️ Admin Panel Kholo</button>` : ''}
+      ${notifPermButtonHtml()}
+      <div class="profile-section-label">Profile Edit Karo</div>
+      <div class="field">
+        <label>Naam</label>
+        <input id="editName" value="${escapeHtml(currentUser.name)}">
+      </div>
+      <div class="field">
+        <label>Bio</label>
+        <textarea id="editBio" style="min-height:50px;">${escapeHtml(currentUser.bio||'')}</textarea>
+      </div>
+      <div class="field">
+        <label>Avatar</label>
+        <div class="avatar-picker">
+          ${AVATARS.map(a=>`<div class="avatar-opt ${a===currentUser.avatar?'selected':''}" onclick="selectProfileAvatar(this,'${a}')">${a}</div>`).join('')}
+        </div>
+      </div>
+      <button class="btn-primary" onclick="saveProfile()">Profile Save Karo</button>
+      <div class="profile-section-label">Password Change Karo</div>
+      <div class="field">
+        <label>Naya Password</label>
+        <input id="newPassword" type="password" placeholder="Kam se kam 6 characters">
+      </div>
+      <button class="btn-outline" onclick="changePassword()">🔒 Password Update Karo</button>
+      ${blockedListHtml}
+      <div style="height:6px;"></div>
+      <button class="btn-danger" onclick="doLogout()">Logout</button>
+      <div style="height:10px;"></div>
+      <button class="btn-danger" onclick="deleteMyAccount()">🗑️ Account Delete Karo</button>
+    </div>
+  `;
+}
+
+function selectProfileAvatar(el, a){
+  document.querySelectorAll('.avatar-picker .avatar-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  profileAvatarChoice = a;
+}
+
+async function contactForPro(){
+  try{
+    await db.collection('proRequests').add({
+      userUid: currentUser.uid, username: currentUser.username, name: currentUser.name,
+      avatar: currentUser.avatar, time: Date.now(), status:'pending'
+    });
+  }catch(e){ /* non-fatal, still open WhatsApp */ }
+  const msg = `Salam! Main ${currentUser.name} (@${currentUser.username}) TaskYaar PRO lena chahta/chahti hoon. Payment kaise karoon?`;
+  const waUrl = `https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, '_blank');
+  toast('Request bhej di! WhatsApp pe baat karo, phir owner approve karega 💎');
+  renderApp();
+}
+
+function getReferralLink(){
+  const base = window.location.href.split('?')[0];
+  return `${base}?ref=${encodeURIComponent(currentUser.username)}`;
+}
+
+function shareApp(){
+  const url = getReferralLink();
+  const text = `Mujhe TaskYaar pe join karo! Tasks complete karo, coins kamao, aur mujhse connect ho jao 🎯🤝 Mera referral link use karoge to dono ko bonus coins milenge!`;
+  if(navigator.share){
+    navigator.share({title:'TaskYaar', text, url}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(`${text}\n${url}`).then(()=>{
+      toast('Link copy ho gaya! 📋 Kisi ko bhi bhej do');
+    }).catch(()=>{
+      toast(url);
+    });
+  }
+}
+
+function notifPermButtonHtml(){
+  if(!('Notification' in window)) return '';
+  const perm = Notification.permission;
+  if(perm==='granted'){
+    return `<div class="badge-chip" style="display:block;text-align:center;margin-bottom:10px;padding:10px;">🔔 Push Notifications ON hain</div>`;
+  }
+  if(perm==='denied'){
+    return `<div class="badge-chip" style="display:block;text-align:center;margin-bottom:10px;padding:10px;color:#c0392b;">🔕 Notifications block hain — browser settings se on karo</div>`;
+  }
+  return `<button class="btn-outline" onclick="requestNotifPermission()">🔔 Push Notifications On Karo</button>`;
+}
+
+async function saveProfile(){
+  const name = document.getElementById('editName').value.trim();
+  const bio = document.getElementById('editBio').value.trim();
+  if(!name){ toast('Naam khali nahi ho sakta'); return; }
+  const patch = {name, bio};
+  if(profileAvatarChoice) patch.avatar = profileAvatarChoice;
+  try{
+    await db.collection('users').doc(currentUser.uid).update(patch);
+    Object.assign(currentUser, patch);
+    await markTaskDone('t1', true);
+    confettiBurst();
+    toast('Profile update ho gaya! +20 coins 🎉');
+    renderApp();
+  }catch(e){ toast('Save nahi hua, internet check karo'); }
+}
+
+async function changePassword(){
+  const input = document.getElementById('newPassword');
+  const newPass = input.value;
+  if(!newPass || newPass.length<6){ toast('Password kam se kam 6 characters ka ho'); return; }
+  try{
+    await auth.currentUser.updatePassword(newPass);
+    input.value = '';
+    toast('Password update ho gaya! 🔒');
+  }catch(e){
+    if(e.code==='auth/requires-recent-login'){
+      toast('Security ke liye pehle logout karke dobara login karo, phir password change karo');
+    } else {
+      toast('Password update nahi hua, dobara try karo');
+    }
+  }
+}
+
+async function deleteMyAccount(){
+  if(!confirm('Account permanently delete karna hai? Sara data (posts, coins, dost, chat) hamesha ke liye chala jayega!')) return;
+  if(!confirm('Pakka pakka? Ye action wapis nahi ho sakta.')) return;
+  try{
+    await db.collection('users').doc(currentUser.uid).delete();
+    await auth.currentUser.delete();
+    toast('Account delete ho gaya. Alvida! 👋');
+  }catch(e){
+    if(e.code==='auth/requires-recent-login'){
+      toast('Security ke liye pehle logout karke dobara login karo, phir delete karo');
+    } else {
+      toast('Delete nahi hua, dobara try karo');
+    }
+  }
+}
+
+/* ============ ADMIN PANEL (owner only) ============ */
+async function renderAdminSection(){
+  const isOwner = currentUser.username && currentUser.username.toLowerCase()===OWNER_USERNAME;
+  if(!isOwner){
+    return `<div class="section active"><div class="empty-state"><span class="big-emoji">🔒</span>Ye page sirf owner ke liye hai</div></div>`;
+  }
+  const [sponsoredSnap, proSnap, postsSnap, reportsSnap] = await Promise.all([
+    db.collection('sponsoredTasks').get(),
+    db.collection('proRequests').where('status','==','pending').get(),
+    db.collection('posts').orderBy('time','desc').limit(30).get(),
+    db.collection('reports').where('status','==','pending').get()
+  ]);
+  const sponsoredList = sponsoredSnap.docs.map(d=>({id:d.id, ...d.data()}));
+  const proList = proSnap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>a.time-b.time);
+  const postsList = postsSnap.docs.map(d=>({id:d.id, ...d.data()}));
+  const reportsList = reportsSnap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>b.time-a.time);
+
+  const sponsoredRows = sponsoredList.length ? sponsoredList.map(s=>`
+    <div class="admin-row">
+      <div style="font-size:20px;">${s.emoji||'⭐'}</div>
+      <div class="rinfo"><b>${escapeHtml(s.title)}</b><br>${escapeHtml(s.sponsorName||'')} • 🪙${s.reward} • ${s.active?'Active':'Off'}</div>
+      <button class="mini-btn toggle" onclick="toggleSponsoredActive('${s.id}', ${!s.active})">${s.active?'Off Karo':'On Karo'}</button>
+      <button class="mini-btn del" onclick="deleteSponsoredTask('${s.id}')">🗑️</button>
+    </div>
+  `).join('') : `<div class="empty-state" style="padding:20px;"><span class="big-emoji" style="font-size:28px;">💤</span>Koi sponsored task nahi hai</div>`;
+
+  const proRows = proList.length ? proList.map(p=>`
+    <div class="admin-row">
+      <div style="font-size:20px;">${p.avatar||'👤'}</div>
+      <div class="rinfo"><b>${escapeHtml(p.name)}</b> (@${escapeHtml(p.username)})<br>${timeAgo(p.time)}</div>
+      <button class="mini-btn approve" onclick="approveProRequest('${p.id}','${p.userUid}')">✅</button>
+      <button class="mini-btn reject" onclick="rejectProRequest('${p.id}')">❌</button>
+    </div>
+  `).join('') : `<div class="empty-state" style="padding:20px;"><span class="big-emoji" style="font-size:28px;">✅</span>Koi pending request nahi hai</div>`;
+
+  const postsRows = postsList.length ? postsList.map(p=>`
+    <div class="admin-row">
+      <div style="font-size:20px;">${p.avatar||'📝'}</div>
+      <div class="rinfo"><b>${escapeHtml(p.authorName)}</b><br>${escapeHtml((p.text||'').slice(0,60))}${(p.text||'').length>60?'...':''}<br>${timeAgo(p.time)}</div>
+      <button class="mini-btn del" onclick="deletePost('${p.id}')">🗑️</button>
+    </div>
+  `).join('') : `<div class="empty-state" style="padding:20px;"><span class="big-emoji" style="font-size:28px;">📭</span>Koi post nahi hai</div>`;
+
+  const reportsRows = reportsList.length ? reportsList.map(r=>`
+    <div class="admin-row">
+      <div style="font-size:20px;">🚩</div>
+      <div class="rinfo"><b>${escapeHtml(r.reportedName)}</b> ki report — by ${escapeHtml(r.reportedByName)}<br>"${escapeHtml(r.reason)}" • ${timeAgo(r.time)}</div>
+      <button class="mini-btn reject" onclick="banUser('${r.id}','${r.reportedUid}')">🚫 Ban</button>
+      <button class="mini-btn toggle" onclick="dismissReport('${r.id}')">Dismiss</button>
+    </div>
+  `).join('') : `<div class="empty-state" style="padding:20px;"><span class="big-emoji" style="font-size:28px;">✅</span>Koi report nahi hai</div>`;
+
+  return `
+    <div class="section active">
+      <div class="thread-header">
+        <button class="back-btn" onclick="switchTab('profile')">←</button>
+        <div class="thread-name">⚙️ Admin Panel</div>
+      </div>
+
+      <div class="admin-section-title">Reports 🚩</div>
+      ${reportsRows}
+
+      <div class="admin-section-title">Naya Sponsored Task Banao</div>
+      <div class="admin-form">
+        <div class="field"><label>Business/Sponsor Naam</label><input id="spName" placeholder="e.g. Pizza Aish"></div>
+        <div class="field"><label>Task Title</label><input id="spTitle" placeholder="e.g. Humara Instagram follow karo"></div>
+        <div class="field"><label>Emoji</label><input id="spEmoji" placeholder="e.g. 📸" maxlength="4"></div>
+        <div class="field"><label>Link</label><input id="spLink" placeholder="https://instagram.com/..."></div>
+        <div class="field"><label>Reward (coins)</label><input id="spReward" type="number" placeholder="30"></div>
+        <button class="btn-primary" onclick="addSponsoredTask()">Task Add Karo</button>
+      </div>
+      ${sponsoredRows}
+
+      <div class="admin-section-title">Pending PRO Requests</div>
+      ${proRows}
+
+      <div class="admin-section-title">Posts Manage Karo</div>
+      ${postsRows}
+    </div>
+  `;
+}
+
+async function addSponsoredTask(){
+  const sponsorName = document.getElementById('spName').value.trim();
+  const title = document.getElementById('spTitle').value.trim();
+  const emoji = document.getElementById('spEmoji').value.trim() || '⭐';
+  const link = document.getElementById('spLink').value.trim();
+  const reward = parseInt(document.getElementById('spReward').value) || 10;
+  if(!sponsorName || !title || !link){ toast('Sab fields fill karo'); return; }
+  try{
+    await db.collection('sponsoredTasks').add({sponsorName, title, emoji, link, reward, active:true, createdAt:Date.now()});
+    toast('Sponsored task add ho gaya! ✅');
+    renderApp();
+  }catch(e){ toast('Save nahi hua, dobara try karo'); }
+}
+
+async function toggleSponsoredActive(id, newState){
+  try{
+    await db.collection('sponsoredTasks').doc(id).update({active:newState});
+    renderApp();
+  }catch(e){ toast('Update nahi hua'); }
+}
+
+async function deleteSponsoredTask(id){
+  if(!confirm('Ye sponsored task delete karni hai?')) return;
+  try{
+    await db.collection('sponsoredTasks').doc(id).delete();
+    renderApp();
+  }catch(e){ toast('Delete nahi hua'); }
+}
+
+async function approveProRequest(reqId, userUid){
+  try{
+    const batch = db.batch();
+    batch.update(db.collection('proRequests').doc(reqId), {status:'approved'});
+    batch.update(db.collection('users').doc(userUid), {isPro:true, proSince:Date.now()});
+    await batch.commit();
+    toast('User ko PRO mil gaya! 💎');
+    renderApp();
+  }catch(e){ toast('Approve nahi hua, dobara try karo'); }
+}
+
+async function rejectProRequest(reqId){
+  try{
+    await db.collection('proRequests').doc(reqId).update({status:'rejected'});
+    toast('Request reject kar di');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua'); }
+}
+
+async function banUser(reportId, targetUid){
+  if(!confirm('Is user ko ban karna hai? Wo dobara login nahi kar sakega.')) return;
+  try{
+    const batch = db.batch();
+    batch.update(db.collection('users').doc(targetUid), {banned:true});
+    batch.update(db.collection('reports').doc(reportId), {status:'resolved'});
+    await batch.commit();
+    toast('User ban kar diya gaya 🚫');
+    renderApp();
+  }catch(e){ toast('Kuch masla hua, dobara try karo'); }
+}
+
+async function dismissReport(reportId){
+  try{
+    await db.collection('reports').doc(reportId).update({status:'dismissed'});
+    renderApp();
+  }catch(e){ toast('Kuch masla hua'); }
+}
+
+/* ============ INIT ============ */
+app.innerHTML = `<div class="auth-wrap"><div style="text-align:center;font-weight:800;color:#6b7d84;">⏳ Load ho raha hai...</div></div>`;
+</script>
+</body>
+</html>
